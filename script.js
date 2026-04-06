@@ -1,18 +1,36 @@
 const rebika = {
     name: "rebika parajuli",
     role: "computer engineering student",
-    bio: "hi! i am rebika parajuli - learner | tech enthusiast.",
+    bio: "computer engineering student with a strong interest in artificial intelligence, machine learning, and frontend development.",
+    education: "IOE-Paschimanchal Campus\nBachelors in Computer Engineering (Nov 2024 - )",
+    leadership: [
+        "Marketing & Social Media Head - AWS Student Community Day 2025",
+        "Outreach & Branding Member - AWS Cloud Club, IOE-Paschimanchal Campus"
+    ],
     skills() {
-        return ["HTML", "CSS", "JavaScript", "Python", "C/C++", "Arduino", "Robotics"];
+        return [
+            "Programming: Python, JavaScript",
+            "AI/ML & Data: PyTorch, Pandas, NumPy",
+            "Web Development: HTML, CSS",
+            "Tools & Frameworks: Streamlit",
+            "Hardware: Arduino, Robotics"
+        ];
     },
     about() {
-        return `Name: ${this.name}\nRole: ${this.role}\nBio: ${this.bio}`;
+        return `Name: ${this.name}\nRole: ${this.role}\nBio: ${this.bio}\nEducation: ${this.education}`;
     },
     projects() {
-        return ["line following robot", "instagram analysis tool", "minesweeper with sounds"];
+        return [
+            "Flower Recognition Using Deep Learning - built a ResNet9-based classifier for different flower species and deployed it as an interactive Streamlit app.",
+            "Instagram Follower-Following Comparison - created a Python Jupyter Notebook tool that analyzes Instagram follower data, exports CSV reports, and finds mutuals and differences.",
+            "Minesweeper with sounds"
+        ];
     },
     contact() {
         return "email: rebikaparajuli@gmail.com\nGitHub: github.com/apple-pie-h";
+    },
+    activities() {
+        return this.leadership;
     }
 };
 
@@ -24,7 +42,10 @@ const commandResolvers = {
     "rebika.skills": () => rebika.skills(),
     "rebika.projects": () => rebika.projects(),
     "rebika.contact": () => rebika.contact(),
-    "rebika.contacts": () => rebika.contact()
+    "rebika.contacts": () => rebika.contact(),
+    "rebika.education": () => rebika.education,
+    "rebika.activities": () => rebika.activities(),
+    "rebika.leadership": () => rebika.activities()
 };
 
 function normalizeCommand(value) {
@@ -44,7 +65,7 @@ function resolveCommand(command) {
     const resolver = commandResolvers[normalized];
 
     if (!resolver) {
-        throw new Error("Unknown command. Try rebika.about, rebika.skills, rebika.projects, rebika.contact, rebika.name, or rebika.role.");
+        throw new Error("Unknown command. Try rebika.about, rebika.skills, rebika.projects, rebika.contact, rebika.education, rebika.activities, rebika.name, or rebika.role.");
     }
 
     return resolver();
@@ -101,6 +122,18 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
+
+    document.querySelectorAll(".code-input-field").forEach((inputField) => {
+        inputField.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter") return;
+            event.preventDefault();
+
+            const match = inputField.id.match(/customCode(\d+)/);
+            if (!match) return;
+
+            window.runCode(Number(match[1]));
+        });
+    });
 
     initializePet();
 });
