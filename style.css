@@ -13,6 +13,9 @@
     --text-muted: #a6a6a6;
     --accent: #28ca42;
     --accent-soft: #7f7f80;
+    --scroll-track: #1b1b1b;
+    --scroll-thumb: #4f4f4f;
+    --scroll-thumb-hover: #6a6a6a;
     --photo-border: #ffffff;
     --photo-glow: rgba(199, 168, 109, 0.3);
     --shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -135,6 +138,7 @@ input {
     border: 2px solid var(--photo-border);
     box-shadow: 0 10px 30px var(--photo-glow);
     background: linear-gradient(135deg, #7cb1dd, #71b8f7);
+    flex-shrink: 0;
 }
 
 .photo-container img {
@@ -145,6 +149,12 @@ input {
 
 .intro-text {
     margin-top: 20px;
+}
+
+@media (min-width: 769px) {
+    .intro-text {
+        max-width: 52ch;
+    }
 }
 
 .intro-text h1 {
@@ -159,6 +169,7 @@ input {
     line-height: 1.8;
     max-width: 52ch;
 }
+
 .intro-text p + p {
     margin-top: 14px;
 }
@@ -175,6 +186,27 @@ input {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     min-height: 70vh;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+#terminal::-webkit-scrollbar {
+    width: 10px;
+}
+
+#terminal::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+    border-radius: 999px;
+}
+
+#terminal::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--scroll-thumb), var(--scroll-thumb-hover));
+    border-radius: 999px;
+    border: 2px solid var(--scroll-track);
+}
+
+#terminal::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--scroll-thumb-hover), #808080);
 }
 
 @media (min-width: 769px) {
@@ -282,6 +314,13 @@ input {
     z-index: 6;
 }
 
+@media (min-width: 769px) {
+    .social-links {
+        left: 24px;
+        bottom: 20px;
+    }
+}
+
 .social-links a {
     width: 36px;
     height: 36px;
@@ -313,6 +352,13 @@ input {
     width: 64px;
     height: 64px;
     z-index: 5;
+}
+
+@media (min-width: 769px) {
+    #virtual-pet {
+        left: 10px;
+        bottom: 66px;
+    }
 }
 
 #pet-container {
