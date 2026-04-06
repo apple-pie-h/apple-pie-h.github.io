@@ -7,6 +7,14 @@ const rebika = {
         "Marketing & Social Media Head - AWS Student Community Day 2025",
         "Outreach & Branding Member - AWS Cloud Club, IOE-Paschimanchal Campus"
     ],
+    focus() {
+        return [
+            "Programming",
+            "AI/ML",
+            "Data work",
+            "Web development"
+        ];
+    },
     skills() {
         return [
             "Programming: Python, JavaScript",
@@ -21,9 +29,21 @@ const rebika = {
     },
     projects() {
         return [
-            "Flower Recognition Using Deep Learning - built a ResNet9-based classifier for different flower species and deployed it as an interactive Streamlit app.",
-            "Instagram Follower-Following Comparison - created a Python Jupyter Notebook tool that analyzes Instagram follower data, exports CSV reports, and finds mutuals and differences.",
-            "Minesweeper with sounds"
+            {
+                title: "Flower Recognition Using Deep Learning",
+                summary: "Built a ResNet9-based classifier for different flower species and deployed it as an interactive Streamlit app.",
+                stack: "PyTorch, Deep Learning, Streamlit"
+            },
+            {
+                title: "Instagram Follower-Following Comparison",
+                summary: "Created a Python notebook tool that analyzes Instagram follower data, exports CSV reports, and finds mutuals and differences.",
+                stack: "Python, Jupyter Notebook, CSV reporting"
+            },
+            {
+                title: "Minesweeper Game",
+                summary: "Developed a playable minesweeper project with an interactive experience.",
+                stack: "JavaScript, HTML, CSS"
+            }
         ];
     },
     contact() {
@@ -39,6 +59,7 @@ const commandResolvers = {
     "rebika.role": () => rebika.role,
     "rebika.bio": () => rebika.bio,
     "rebika.about": () => rebika.about(),
+    "rebika.focus": () => rebika.focus(),
     "rebika.skills": () => rebika.skills(),
     "rebika.projects": () => rebika.projects(),
     "rebika.contact": () => rebika.contact(),
@@ -54,7 +75,15 @@ function normalizeCommand(value) {
 }
 
 function formatResult(result) {
-    if (Array.isArray(result)) return result.join(", ");
+    if (Array.isArray(result)) {
+        if (result.every((item) => item && typeof item === "object" && "title" in item)) {
+            return result.map((item, index) => {
+                return `${index + 1}. ${item.title}\n   ${item.summary}\n   Stack: ${item.stack}`;
+            }).join("\n\n");
+        }
+
+        return result.map((item) => `- ${item}`).join("\n");
+    }
     if (typeof result === "object" && result !== null) return JSON.stringify(result, null, 2);
     if (result === undefined) return "undefined";
     return String(result);
@@ -65,7 +94,7 @@ function resolveCommand(command) {
     const resolver = commandResolvers[normalized];
 
     if (!resolver) {
-        throw new Error("Unknown command. Try rebika.about, rebika.skills, rebika.projects, rebika.contact, rebika.education, rebika.activities, rebika.name, or rebika.role.");
+        throw new Error("Unknown command. Try rebika.about, rebika.focus, rebika.skills, rebika.projects, rebika.contact, rebika.education, rebika.activities, rebika.name, or rebika.role.");
     }
 
     return resolver();
