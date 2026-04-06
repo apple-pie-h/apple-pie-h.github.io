@@ -72,16 +72,7 @@ function resolveCommand(command) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const outputDiv = document.getElementById("output");
     const autoRunBtn = document.getElementById("autoRunBtn");
-
-    function safePrint(text) {
-        if (!outputDiv) return;
-        const element = document.createElement("div");
-        element.className = "output";
-        element.textContent = String(text);
-        outputDiv.appendChild(element);
-    }
 
     window.runCode = function runCode(cellNum) {
         const output = document.getElementById(`output${cellNum}`);
@@ -101,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const formatted = formatResult(result);
             output.textContent = formatted;
             output.classList.add("show");
-            safePrint(`>>> ${normalizeCommand(code)}\n${formatted}`);
         } catch (error) {
             output.textContent = `Error: ${error.message}`;
             output.classList.add("show");
