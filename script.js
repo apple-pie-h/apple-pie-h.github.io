@@ -55,23 +55,22 @@ const rebika = {
 };
 
 const commandResolvers = {
-    "rebika.name": () => rebika.name,
-    "rebika.role": () => rebika.role,
-    "rebika.bio": () => rebika.bio,
-    "rebika.about": () => rebika.about(),
-    "rebika.focus": () => rebika.focus(),
-    "rebika.skills": () => rebika.skills(),
-    "rebika.projects": () => rebika.projects(),
-    "rebika.contact": () => rebika.contact(),
-    "rebika.contacts": () => rebika.contact(),
-    "rebika.education": () => rebika.education,
-    "rebika.activities": () => rebika.activities(),
-    "rebika.leadership": () => rebika.activities()
+    "name()": () => rebika.name,
+    "role()": () => rebika.role,
+    "bio()": () => rebika.bio,
+    "about()": () => rebika.about(),
+    "focus()": () => rebika.focus(),
+    "skills()": () => rebika.skills(),
+    "projects()": () => rebika.projects(),
+    "contact()": () => rebika.contact(),
+    "education()": () => rebika.education,
+    "activities()": () => rebika.activities(),
+    "leadership()": () => rebika.activities()
 };
 
 function normalizeCommand(value) {
     if (!value) return "";
-    return value.trim().replace(/\(\)\s*$/, "");
+    return value.trim();
 }
 
 function formatResult(result) {
@@ -94,7 +93,7 @@ function resolveCommand(command) {
     const resolver = commandResolvers[normalized];
 
     if (!resolver) {
-        throw new Error("Unknown command. Try rebika.about, rebika.focus, rebika.skills, rebika.projects, rebika.contact, rebika.education, rebika.activities, rebika.name, or rebika.role.");
+        throw new Error("Unknown command. Try about(), focus(), skills(), projects(), contact(), education(), activities(), name(), or role().");
     }
 
     return resolver();
