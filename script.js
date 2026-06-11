@@ -161,8 +161,9 @@ function initializePet() {
     const petContainer = document.getElementById("pet-container");
     const speech = document.getElementById("speech");
     const shadow = document.querySelector(".shadow");
+    const introSection = pet ? pet.closest(".intro-section") : null;
 
-    if (!pet || !petContainer || !speech || !shadow) return;
+    if (!pet || !petContainer || !speech || !shadow || !introSection) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -243,17 +244,38 @@ function initializePet() {
     let pointerY = 0;
     let pointerActive = false;
     let rafId = null;
+    let minX = 0;
+    let maxX = 0;
+    let minY = 0;
+    let maxY = 0;
+
+    function recalculateBounds() {
+        const containerRect = introSection.getBoundingClientRect();
+        const petRect = pet.getBoundingClientRect();
+        const computed = window.getComputedStyle(pet);
+        const baseLeft = Number.parseFloat(computed.left) || 0;
+        const baseBottom = Number.parseFloat(computed.bottom) || 0;
+        const maxLeftTravel = baseLeft;
+        const maxRightTravel = Math.max(0, containerRect.width - (baseLeft + petRect.width));
+        const maxDownTravel = baseBottom;
+        const maxUpTravel = Math.max(0, containerRect.height - (baseBottom + petRect.height));
+
+        minX = -maxLeftTravel;
+        maxX = maxRightTravel;
+        minY = -maxUpTravel;
+        maxY = maxDownTravel;
+    }
 
     function showSpeech(message) {
         const now = Date.now();
-        if (now - lastSpeechTime < 2500) return;
+        if (now - lastSpeechTime < 1000) return;
 
         speech.textContent = message;
         speech.style.display = "block";
         lastSpeechTime = now;
         window.setTimeout(() => {
             speech.style.display = "none";
-        }, 2500);
+        }, 1000);
     }
 
     pet.addEventListener("click", () => {
@@ -312,7 +334,7 @@ function initializePet() {
         rafId = null;
     }
 
-    document.addEventListener("mousemove", (event) => {
+    introSection.addEventListener("pointermove", (event) => {
         pointerX = event.clientX;
         pointerY = event.clientY;
         pointerActive = true;
@@ -322,16 +344,28 @@ function initializePet() {
         }
     }, { passive: true });
 
+    introSection.addEventListener("pointerleave", () => {
+        pointerActive = false;
+        targetX = 0;
+        targetY = 0;
+        shadow.style.transform = "scale(0.8) translateX(0) translateY(0)";
+    });
+
     function animatePet() {
         currentX += (targetX - currentX) * 0.15;
         currentY += (targetY - currentY) * 0.15;
 
+        currentX = Math.min(maxX, Math.max(minX, currentX));
+        currentY = Math.min(maxY, Math.max(minY, currentY));
+
         const distance = Math.hypot(targetX, targetY);
         const scale = 1 + Math.min(distance / 220, 0.05);
-        pet.style.transform = `translate(${currentX}px, ${-currentY}px) scale(${scale})`;
+        pet.style.transform = `translate(${currentX}px, ${currentY}px) scale(${scale})`;
 
         window.requestAnimationFrame(animatePet);
     }
 
+    recalculateBounds();
+    window.addEventListener("resize", recalculateBounds, { passive: true });
     animatePet();
 }
